@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BOARD) # choose BCM or BOARD numbering schemes. I use BOARD 
 
-button_A = 18 # GPIO channel 24 is on pin 18 of connector P1
+button_A = 18 # button is on pin 18
 # it will work on any GPIO channel
 # Optional 50K Ohm pull up to 3.3v. A push button will ground the pin, creating a falling edge.
 
