@@ -13,7 +13,7 @@ button_A = 18 # GPIO channel 24 is on pin 18 of connector P1
 long_press = 1 #s
 very_long_press = 4 #s
 
-red = 13 # set pin 13 for red led
+red = 16 # set pin 16 for red led
 green = 11 # set pin 11 for green led 
 blue = 15 # set pin 15 for blue led 
 
