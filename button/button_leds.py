@@ -8,13 +8,14 @@ GPIO.setmode(GPIO.BOARD) # choose BCM or BOARD numbering schemes. I use BOARD
 
 button_A = 18 # GPIO channel 24 is on pin 18 of connector P1
 # it will work on any GPIO channel
-# Optional 50K Ohm pull up. A push button will ground the pin, creating a falling edge.
+# Optional 50K Ohm pull up to 3.3v. A push button will ground the pin, creating a falling edge.
 
 long_press = 1 #s
 very_long_press = 4 #s
 
-red = 22 # set pin 11 (GPIO 0) for red led
-green = 15 # set pin 13 (GPIO 2) for green led 
+red = 13 # set pin 13 for red led
+green = 11 # set pin 11 for green led 
+blue = 15 # set pin 15 for blue led 
 
 Freq = 60 #Hz
 pause_time = 0.01 # you can change this to slow down/speed up
@@ -22,25 +23,16 @@ pause_time = 0.01 # you can change this to slow down/speed up
 GPIO.setup(button_A, GPIO.IN, pull_up_down=GPIO.PUD_UP) # set button pin as input
 GPIO.setup(red, GPIO.OUT) # set red led pin as output
 GPIO.setup(green, GPIO.OUT) # set green led pin as output
+GPIO.setup(blue, GPIO.OUT) # set blue led pin as output
 RED = GPIO.PWM(red, Freq)
 GREEN = GPIO.PWM(green, Freq)
+BLUE = GPIO.PWM(blue, Freq)
 
 RED.start(0)
 GREEN.start(0)
-
-# backlight state
-bl_state = 1
+BLUE.start(0)
 
 state = 1
-
-def toggle_backlight():
-	global bl_state
-	if bl_state == 1:
-		subprocess.call(['sudo sh -c "echo 1 > /sys/class/backlight/fb_ili9320/bl_power" &'], shell=True)
-		bl_state = 0
-	else:
-		subprocess.call(['sudo sh -c "echo 0 > /sys/class/backlight/fb_ili9320/bl_power" &'], shell=True)
-		bl_state = 1
 
 def system_button(button_A):
 	global state
@@ -64,8 +56,7 @@ def system_button(button_A):
 					
 				elif (button_press_timer > 0.1):
 					# do what you want with a short press
-					print "short press : ", button_press_timer					
-					# toggle_backlight()
+					print "short press : ", button_press_timer
 
 				button_press_timer = 0
 			sleep(0.1)
@@ -82,22 +73,30 @@ try:
 			if state == 0:
 				RED.ChangeDutyCycle(i)
 				GREEN.ChangeDutyCycle(0)
+				BLUE.ChangeDutyCycle(0)
 			if state == 1:
+				RED.ChangeDutyCycle(0)
 				GREEN.ChangeDutyCycle(i)
+				BLUE.ChangeDutyCycle(0)
 			if state == 2:
 				RED.ChangeDutyCycle(i)
-				GREEN.ChangeDutyCycle(100 - i)
+				GREEN.ChangeDutyCycle(0)
+				BLUE.ChangeDutyCycle(100 - i)
 			sleep(pause_time) 
 			
 		for i in range(100,-1,-1):      # from 100 to zero in steps of -1 
 			if state == 0:
 				RED.ChangeDutyCycle(i)
 				GREEN.ChangeDutyCycle(0)
+				BLUE.ChangeDutyCycle(0)
 			if state == 1:
+				RED.ChangeDutyCycle(0)
 				GREEN.ChangeDutyCycle(i)
+				BLUE.ChangeDutyCycle(0)
 			if state == 2:
 				RED.ChangeDutyCycle(i)
-				GREEN.ChangeDutyCycle(100 - i)
+				GREEN.ChangeDutyCycle(0)
+				BLUE.ChangeDutyCycle(100 - i)
 			sleep(pause_time) 
 			
 except KeyboardInterrupt:
